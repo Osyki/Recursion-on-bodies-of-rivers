@@ -54,12 +54,12 @@ int main() {
 
 //    r1->print();
 
-    Missouri->print();
+    Jefferson->print();
     std::cout << "\n--------------\n\n";
-    Rivers* r12 = Missouri->lower_all_ph();
+    Rivers* r12 = Jefferson->lower_all_ph();
     r12->print();
     std::cout << "\n--------------\n\n";
-    Missouri->print();
+    Jefferson->print();
 
 
 //    Rivers* r13 = r1->find_subsystem("Yellowstone");

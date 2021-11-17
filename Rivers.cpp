@@ -115,7 +115,7 @@ Rivers *Rivers::lower_all_ph(Rivers *currentRiver, Rivers *newRivers) {
     list<Rivers*>::const_iterator end = currentRiver->getRivers().end();
     update_ph(begin,end,&newRivers->getRivers());
 
-    return newRivers; //FIXME: not sure what to return here
+    return newRivers;
 }
 
 list<Rivers*> Rivers::update_ph(list<Rivers *>::const_iterator begin, list<Rivers *>::const_iterator end, list<Rivers *> *newRivers) {
@@ -130,7 +130,11 @@ list<Rivers*> Rivers::update_ph(list<Rivers *>::const_iterator begin, list<River
         lower_all_ph(origRiver,riverCopy);
         begin++;
 
-    return update_ph(begin,end,newRivers); //FIXME: not sure what to return here
+    return update_ph(begin,end,newRivers);
+}
+
+Rivers *Rivers::find_subsystem(string name) {
+    return find_subsystem(this,name);
 }
 
 Rivers *Rivers::find_subsystem(Rivers *rivers, string name) {
@@ -163,6 +167,4 @@ void Rivers::print() {
     print(this);
 }
 
-Rivers *Rivers::find_subsystem(string name) {
-    return nullptr;
-}
+
