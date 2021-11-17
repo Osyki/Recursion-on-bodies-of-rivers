@@ -1,6 +1,6 @@
 //
 // Created by hloi on 11/5/2021.
-//
+// Copyright [2021]
 
 #include "Rivers.h"
 #include <string>
@@ -56,7 +56,7 @@ void Rivers::make_river(Rivers *river) {
 string Rivers::list_acidic_rivers(Rivers *rivers) {
     list<Rivers *>::const_iterator begin = rivers->getRivers().begin();
     list<Rivers *>::const_iterator end = rivers->getRivers().end();
-    if (rivers->pH < 7) {
+    if (rivers->pH < acid_level) {
         string rn = rivers->river_name;
         return rn + " " + list_acidic_tributaries(begin, end);
     }
@@ -106,44 +106,61 @@ bool Rivers::bad_numbers(Rivers *river) {
 
 Rivers *Rivers::lower_all_ph() {
     list<Rivers *> mainListCopy;
-    Rivers *mainRiverCopy = new Rivers(getRiverName(), getPh() - 0.1, getDo(),mainListCopy); //create copy of main river being lowered
+    Rivers *mainRiverCopy = new Rivers(getRiverName(), getPh() - 0.1, getDo(),
+                                       mainListCopy); //create copy of main river being lowered
     return lower_all_ph(this, mainRiverCopy); //pass to helper function to finish copying rest of list
 }
 
 Rivers *Rivers::lower_all_ph(Rivers *currentRiver, Rivers *newRivers) {
-    list<Rivers*>::const_iterator begin = currentRiver->getRivers().begin();
-    list<Rivers*>::const_iterator end = currentRiver->getRivers().end();
-    update_ph(begin,end,&newRivers->getRivers());
+    list<Rivers *>::const_iterator begin = currentRiver->getRivers().begin();
+    list<Rivers *>::const_iterator end = currentRiver->getRivers().end();
+    update_ph(begin, end, &newRivers->getRivers());
 
     return newRivers;
 }
 
-list<Rivers*> Rivers::update_ph(list<Rivers *>::const_iterator begin, list<Rivers *>::const_iterator end, list<Rivers *> *newRivers) {
+list<Rivers *>
+Rivers::update_ph(list<Rivers *>::const_iterator begin, list<Rivers *>::const_iterator end, list<Rivers *> *newRivers) {
 
     if (begin == end) {
         return *newRivers;
     }
-        Rivers *origRiver = *begin; //copy address of river to be used
-        list<Rivers*> listCopy; //create a copy list for river being passed
-        Rivers *riverCopy = new Rivers(origRiver->getRiverName(),origRiver->getPh()-0.1,origRiver->DO,listCopy); //create copy
-        newRivers->push_back(riverCopy); //push to river
-        lower_all_ph(origRiver,riverCopy);
-        begin++;
+    Rivers *origRiver = *begin; //copy address of river to be used
+    list<Rivers *> listCopy; //create a copy list for river being passed
+    Rivers *riverCopy = new Rivers(origRiver->getRiverName(), origRiver->getPh() - 0.1, origRiver->DO,
+                                   listCopy); //create copy
+    newRivers->push_back(riverCopy); //push to river
+    lower_all_ph(origRiver, riverCopy);
+    begin++;
 
-    return update_ph(begin,end,newRivers);
+    return update_ph(begin, end, newRivers);
 }
 
 Rivers *Rivers::find_subsystem(string name) {
-    return find_subsystem(this,name);
+    return find_subsystem(this, name);
 }
 
 Rivers *Rivers::find_subsystem(Rivers *rivers, string name) {
-    return nullptr;
+    if (rivers->getRiverName() == name) {
+        return rivers;
+    }
+    list<Rivers *>::const_iterator begin = rivers->getRivers().begin();
+    list<Rivers *>::const_iterator end = rivers->getRivers().end();
+    return find_in_list(begin, end, name);
 }
 
 Rivers *Rivers::find_in_list(list<Rivers *>::const_iterator begin, list<Rivers *>::const_iterator end, string name) {
-    return nullptr;
+    if (begin == end) {
+        return NULL;
+    }
+    Rivers *front = *begin++;
+    Rivers *river_get = find_in_list(begin, end, name);
+    if (river_get != NULL) {
+        return river_get;
+    }
+    return find_subsystem(front, name);
 }
+
 
 void Rivers::print(Rivers *rivers, int level) {
     list<Rivers *>::const_iterator begin = rivers->getRivers().begin();
@@ -164,7 +181,8 @@ void Rivers::print(list<Rivers *>::const_iterator begin, list<Rivers *>::const_i
 }
 
 void Rivers::print() {
+    if (!this) {
+        return;
+    }
     print(this);
 }
-
-
